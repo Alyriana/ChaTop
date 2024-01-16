@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.openclassrooms.nja</groupId>
-    <artifactId>chatop</artifactId>
+    <artifactId>ChaTop</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>chatop</name>
     <description>BackEnd ChaTôp API</description>
