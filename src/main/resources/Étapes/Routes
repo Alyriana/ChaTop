@@ -1,0 +1,54 @@
+1. **Route :** `POST /auth/register`
+   - **Description :** Inscription d'un utilisateur.
+   - **Réponses :**
+     - Code 400 pour les erreurs de saisie.
+     - Code 200 avec un token JWT en cas de succès.
+
+2. **Route :** `POST /auth/login`
+   - **Description :** Connexion d'un utilisateur.
+   - **Réponses :**
+     - Code 200 avec un token JWT en cas de succès.
+     - Code 401 en cas d'échec d'authentification.
+
+3. **Route :** `POST /messages`
+   - **Description :** Envoi de messages.
+   - **Réponses :**
+     - Code 200 pour un envoi réussi.
+     - Code 401 si non autorisé.
+     - Code 400 pour les erreurs de saisie.
+
+4. **Route :** `GET /auth/me`
+   - **Description :** Obtention des informations de l'utilisateur connecté.
+   - **Réponses :**
+     - Code 200 avec les détails de l'utilisateur en cas de succès.
+     - Code 401 si non autorisé.
+
+5. **Route :** `GET /rentals`
+   - **Description :** Liste des locations disponibles.
+   - **Réponses :**
+     - Code 200 avec une liste de locations.
+     - Code 401 si non autorisé.
+
+6. **Route :** `GET /rentals/:id`
+   - **Description :** Détails d'une location spécifique.
+   - **Réponses :**
+     - Code 200 avec les détails de la location.
+     - Code 401 si non autorisé.
+
+7. **Route :** `POST /rentals`
+   - **Description :** Création d'une nouvelle location.
+   - **Réponses :**
+     - Code 200 pour une création réussie.
+     - Code 401 si non autorisé.
+
+8. **Route :** `PUT /rentals/:id`
+   - **Description :** Mise à jour d'une location existante.
+   - **Réponses :**
+     - Code 200 pour une mise à jour réussie.
+     - Code 401 si non autorisé.
+
+9. **Route :** `GET /user/:id`
+   - **Description :** Détails d'un utilisateur spécifique.
+   - **Réponses :**
+     - Code 200 avec les détails de l'utilisateur.
+     - Code 401 si non autorisé.

@@ -1,0 +1,48 @@
+## FR ##
+
+Spring Web : Pour construire une API RESTful avec Spring MVC. Utile pour le développement des contrôleurs.
+
+Spring Data JPA : Pour intégrer la couche de persistance avec JPA (Java Persistence API), facilitant ainsi l'interaction avec la base de données.
+
+Spring Security : Indispensable pour la gestion de la sécurité, notamment pour l'authentification et l'autorisation des utilisateurs, avec une intégration JWT (JSON Web Token) pour la gestion des tokens d'accès.
+
+MySQL Driver : Cette dépendance est nécessaire pour la connexion à la base de données.
+
+Spring Boot DevTools:  Pour le développement rapide et le rechargement automatique des changements.
+
+Spring Boot Test : Pour les tests unitaires et d'intégration.
+
+Springdoc OpenAPI (Swagger) : Pour la documentation de l'API. Cela permet de créer automatiquement une documentation interactive de l'API REST.
+
+Validation (spring-boot-starter-validation) : Pour la validation des données des modèles, par exemple avec des annotations Hibernate Validator.
+
+Lombok : Pour automatiser la création de getters, setters, constructeurs, et d'autres méthodes répétitives.
+
+Cloudinary : Pour la gestion des médias, qui permet l'hébergement, la manipulation et la livraison d'images et de vidéos.
+
+JSON Web Token (jjwt) :  Elle complète Spring Security en fournissant les fonctionnalités nécessaires pour générer des tokens JWT sécurisés, les parser et les valider.
+
+
+## EN ##
+
+Spring Web : For building a RESTful API with Spring MVC. Useful for developing controllers.
+
+Spring Data JPA : For integrating the persistence layer with JPA (Java Persistence API), thus facilitating interaction with the database.
+
+Spring Security : Essential for security management, especially for authentication and authorization of users, with JWT (JSON Web Token) integration for access token management.
+
+MySQL Driver : This dependency is necessary for connecting to the database.
+
+Spring Boot DevTools : For rapid development and automatic reloading of changes.
+
+Spring Boot Test : For unit and integration testing.
+
+Springdoc OpenAPI (Swagger) : For API documentation. This allows for automatically creating interactive documentation of the REST API.
+
+Validation (spring-boot-starter-validation) : For validating model data, for example with Hibernate Validator annotations.
+
+Lombok : For automating the creation of getters, setters, constructors, and other repetitive methods.
+
+Cloudinary : For media management, enabling hosting, manipulation, and delivery of images and videos.
+
+JSON Web Token (jjwt) : Complements Spring Security by providing necessary features for generating secure JWTs, parsing, and validating them.
