@@ -7,16 +7,22 @@ import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
-@NoArgsConstructor
-@AllArgsConstructor
 @Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class MessageDTO {
+
     private Long id;
+
     private Long rentalId;
+
     private Long userId;
+
     private String message;
+
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date createdAt;
+
     @JsonFormat(pattern = "dd/MM/yyyy")
     private Date updatedAt;
 }

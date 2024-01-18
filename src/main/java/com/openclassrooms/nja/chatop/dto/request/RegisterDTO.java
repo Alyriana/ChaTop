@@ -1,30 +1,27 @@
-package com.openclassrooms.nja.chatop.dto;
+package com.openclassrooms.nja.chatop.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDTO {
+public class RegisterDTO {
 
-    private Long id;
-
+    @NotBlank(message = "Name cannot be empty")
     private String name;
 
     @NotBlank(message = "Email cannot be empty")
     @Email(message = "Invalid email format")
     private String email;
 
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private Date createdAt;
+    @NotBlank(message = "Password cannot be empty")
+    private String password;
 
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private Date updatedAt;
+    private Timestamp createdAt;
 }
