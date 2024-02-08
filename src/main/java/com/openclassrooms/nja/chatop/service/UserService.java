@@ -8,23 +8,28 @@ import com.openclassrooms.nja.chatop.exception.UserAlreadyExistsException;
 import com.openclassrooms.nja.chatop.repository.UserRepository;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.oauth2.jwt.JwtEncoder;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Optional;
 
 @Data
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
+    @Autowired
     private final UserRepository userRepository;
-    private final JwtEncoder jwtEncoder;
-    private final BCryptPasswordEncoder passwordEncoder;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Transactional
     public UsersEntity findByEmail(String email) {
@@ -44,22 +49,26 @@ public class UserService {
     }
 
     @Transactional
-    public void createUser(RegisterDTO user) {
+    public UsersEntity createUser(RegisterDTO user) throws UserAlreadyExistsException, CreationFailureException {
+        if (existsByEmail(user.getEmail())) {
+            throw new UserAlreadyExistsException("User already exists with this email");
+        }
         try {
-            if (existsByEmail(user.getEmail())) {
-                throw new UserAlreadyExistsException("User already exists with this email");
-            }
             UsersEntity userCreated = UsersEntity.builder()
                     .email(user.getEmail())
                     .name(user.getName())
                     .password(passwordEncoder.encode(user.getPassword()))
                     .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                     .build();
-            userRepository.save(userCreated);
-        } catch (DataIntegrityViolationException e) {
-            throw new CreationFailureException("User creation failed due to data integrity violation: " + e.getMessage());
-        } catch (IllegalArgumentException e) {
-            throw new CreationFailureException("User creation failed due to invalid data: " + e.getMessage());
+            return userRepository.save(userCreated);
+        } catch (CreationFailureException e) {
+            throw new CreationFailureException("Registration Failed");
         }
+    }
+
+    @Override
+    public User loadUserByUsername(String email) throws UsernameNotFoundException {
+        Optional<UsersEntity> user = userRepository.findByEmail(email);
+        return user.map(usersEntity -> new User(email, usersEntity.getPassword(), new ArrayList<>())).orElseThrow();
     }
 }
