@@ -74,4 +74,8 @@ public class JwtService {
             throw new TokenErrorException("Invalid or expired JWT token");
         }
     }
+
+    public Claims getClaims(String token) {
+        return Jwts.parserBuilder().setSigningKey(getKey()).build().parseClaimsJws(token).getBody();
+    }
 }
