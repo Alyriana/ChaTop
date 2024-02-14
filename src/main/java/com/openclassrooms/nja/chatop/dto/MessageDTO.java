@@ -1,28 +1,22 @@
 package com.openclassrooms.nja.chatop.dto;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 public class MessageDTO {
 
-    private Long id;
-
-    private Long rentalId;
-
-    private Long userId;
-
+    @NotBlank(message = "Message cannot be empty")
     private String message;
 
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private Date createdAt;
+    @NotBlank
+    private Integer userId;
 
-    @JsonFormat(pattern = "dd/MM/yyyy")
-    private Date updatedAt;
+    @NotBlank
+    private Integer rentalId;
 }

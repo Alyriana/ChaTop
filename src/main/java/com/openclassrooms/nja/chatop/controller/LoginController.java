@@ -2,48 +2,36 @@ package com.openclassrooms.nja.chatop.controller;
 
 import com.openclassrooms.nja.chatop.dto.request.LoginDTO;
 import com.openclassrooms.nja.chatop.dto.response.JwtAuthenticationDTO;
-import com.openclassrooms.nja.chatop.entity.UsersEntity;
-import com.openclassrooms.nja.chatop.service.JwtService;
-import com.openclassrooms.nja.chatop.service.UserService;
+import com.openclassrooms.nja.chatop.dto.response.ResponseDTO;
+import com.openclassrooms.nja.chatop.exception.AuthFailedException;
+import com.openclassrooms.nja.chatop.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.Data;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Optional;
 
 @Data
 @RestController
 @RequestMapping("/api/auth")
 public class LoginController {
 
-    private final BCryptPasswordEncoder passwordEncoder;
-    @Autowired
-    private JwtService jwtService;
-    @Autowired
-    private UserService userService;
+    private final AuthenticationService authenticationService;
 
     @PostMapping("/login")
     public ResponseEntity<?> authenticateUser(@Valid @RequestBody LoginDTO loginDTO) {
-        Optional<UsersEntity> user = Optional.ofNullable(userService.findByEmail(loginDTO.getEmail()));
-        if (user.isEmpty()) {
-            return new ResponseEntity<>("User Not Found", HttpStatus.NOT_FOUND);
-        }
-        if (passwordEncoder.matches(loginDTO.getPassword(), user.orElseThrow().getPassword())) {
-            String token = jwtService.generateToken(user.orElseThrow().getEmail());
-            if (token != null) {
-                return ResponseEntity.ok(new JwtAuthenticationDTO(token));
-            } else {
-                return new ResponseEntity<>("Token Generation Failed", HttpStatus.UNAUTHORIZED);
-            }
-        } else {
-            return new ResponseEntity<>("Bad Credentials", HttpStatus.BAD_REQUEST);
+        try {
+            String token = authenticationService.loginAndGenerateToken(loginDTO);
+            return ResponseEntity.ok(new JwtAuthenticationDTO(token));
+        } catch (AuthFailedException e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ResponseDTO(HttpStatus.UNAUTHORIZED.value(), e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Authentication failed due to an unexpected error."));
         }
     }
 }
