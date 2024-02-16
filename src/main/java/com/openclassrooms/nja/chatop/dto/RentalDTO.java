@@ -17,14 +17,15 @@ public class RentalDTO {
     private String name;
 
     @NotBlank(message = "Surface cannot be empty")
-    private String surface;
+    private Integer surface;
 
     @NotBlank(message = "Price cannot be empty")
-    private String price;
+    private Integer price;
 
     @NotBlank(message = "Picture cannot be empty")
     private MultipartFile picture;
 
     @NotBlank(message = "Description cannot be empty")
     private String description;
+
 }

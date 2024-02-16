@@ -18,8 +18,6 @@ Validation (spring-boot-starter-validation) : Pour la validation des données de
 
 Lombok : Pour automatiser la création de getters, setters, constructeurs, et d'autres méthodes répétitives.
 
-Cloudinary : Pour la gestion des médias, qui permet l'hébergement, la manipulation et la livraison d'images et de vidéos.
-
 JSON Web Token (jjwt) :  Elle complète Spring Security en fournissant les fonctionnalités nécessaires pour générer des tokens JWT sécurisés, les parser et les valider.
 
 

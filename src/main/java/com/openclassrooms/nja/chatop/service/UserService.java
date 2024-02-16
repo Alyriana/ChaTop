@@ -6,7 +6,6 @@ import com.openclassrooms.nja.chatop.exception.CreationFailureException;
 import com.openclassrooms.nja.chatop.exception.NotFoundException;
 import com.openclassrooms.nja.chatop.exception.UserAlreadyExistsException;
 import com.openclassrooms.nja.chatop.repository.UserRepository;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -21,7 +20,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Optional;
 
-@Data
 @Service
 @RequiredArgsConstructor
 public class UserService implements UserDetailsService {
@@ -43,17 +41,17 @@ public class UserService implements UserDetailsService {
     }
 
     @Transactional
-    public UsersEntity findById(int id) {
+    public UsersEntity findById(Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("User with ID " + id + " not found"));
     }
 
     @Transactional
-    public UsersEntity createUser(RegisterDTO user) throws UserAlreadyExistsException, CreationFailureException {
-        if (existsByEmail(user.getEmail())) {
-            throw new UserAlreadyExistsException("User already exists with this email");
-        }
+    public UsersEntity createUser(RegisterDTO user) {
         try {
+            if (existsByEmail(user.getEmail())) {
+                throw new UserAlreadyExistsException("User already exists with this email");
+            }
             UsersEntity userCreated = UsersEntity.builder()
                     .email(user.getEmail())
                     .name(user.getName())
@@ -61,14 +59,15 @@ public class UserService implements UserDetailsService {
                     .createdAt(Timestamp.valueOf(LocalDateTime.now()))
                     .build();
             return userRepository.save(userCreated);
-        } catch (CreationFailureException e) {
-            throw new CreationFailureException("Registration Failed");
+        } catch (Exception e) {
+            throw new CreationFailureException("Creation failed. " + e);
         }
     }
 
     @Override
     public User loadUserByUsername(String email) throws UsernameNotFoundException {
         Optional<UsersEntity> user = userRepository.findByEmail(email);
-        return user.map(usersEntity -> new User(email, usersEntity.getPassword(), new ArrayList<>())).orElseThrow();
+        return user.map(usersEntity -> new User(email, usersEntity.getPassword(), new ArrayList<>()))
+                .orElseThrow(() -> new NotFoundException("User with email " + email + " not found"));
     }
 }
