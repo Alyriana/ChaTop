@@ -1,7 +1,7 @@
 package com.openclassrooms.nja.chatop.configuration;
 
+import com.openclassrooms.nja.chatop.service.CustomUserDetailService;
 import com.openclassrooms.nja.chatop.service.JwtService;
-import com.openclassrooms.nja.chatop.service.UserService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -18,12 +18,13 @@ import java.io.IOException;
 
 @Component
 public class JwtAuthFilter extends OncePerRequestFilter {
-
+    @Autowired
     private final JwtService jwtService;
-    private final UserService userService;
+    @Autowired
+    private final CustomUserDetailService userService;
 
     @Autowired
-    public JwtAuthFilter(JwtService jwtService, @Lazy UserService userService) {
+    public JwtAuthFilter(JwtService jwtService, @Lazy CustomUserDetailService userService) {
         this.jwtService = jwtService;
         this.userService = userService;
     }
@@ -38,6 +39,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
+            if (!jwtService.validate(token)) {
+                filterChain.doFilter(request, response);
+                return;
+            }
             email = jwtService.extractUsername(token);
         }
 

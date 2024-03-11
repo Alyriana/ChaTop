@@ -9,4 +9,7 @@ public class UploadFailureException extends RuntimeException {
         super(message);
     }
 
+    public UploadFailureException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

@@ -1,42 +1,68 @@
 package com.openclassrooms.nja.chatop.configuration;
 
-import lombok.AllArgsConstructor;
+import io.swagger.v3.oas.annotations.OpenAPIDefinition;
+import io.swagger.v3.oas.annotations.enums.SecuritySchemeType;
+import io.swagger.v3.oas.annotations.info.Info;
+import io.swagger.v3.oas.annotations.security.SecurityScheme;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
+import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.web.filter.CorsFilter;
 
-@Configuration
-@AllArgsConstructor
 @EnableWebSecurity
+@EnableMethodSecurity
+@Configuration
+@OpenAPIDefinition(info = @Info(title = "ChaTop API", version = "v1"))
+@SecurityScheme(
+        name = "bearerAuth",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)
 public class SpringSecurityConfig {
 
+    private final String[] AUTH_WHITE_LIST = {
+            "/api/auth/register",
+            "/api/auth/login",
+            "/v3/api-docs/**",
+            "/swagger-ui/**",
+            "/v2/api-docs/**",
+            "/swagger-resources/**"
+    };
     @Autowired
-    private final JwtAuthFilter jwtAuthFilter;
+    private JwtAuthFilter jwtAuthFilter;
+    @Value("${chatop.security.cors.origins}")
+    private String corsOrigins;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
-                        .anyRequest().authenticated())
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .addFilterAfter(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
-                .exceptionHandling(handling -> handling
-                        .authenticationEntryPoint(new HttpStatusEntryPoint(HttpStatus.UNAUTHORIZED)));
+        http = http.cors().and().csrf().disable();
+        http = http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS).and();
+        http = http.exceptionHandling().authenticationEntryPoint((request, response, ex) -> {
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED, ex.getMessage());
+        }).and();
+        http.authorizeHttpRequests()
+                .requestMatchers(AUTH_WHITE_LIST).permitAll()
+                .requestMatchers("/api/auth/me").hasRole("USER")
+                .requestMatchers("/api/rentals/**").hasRole("USER")
+                .requestMatchers("/api/messages/**").hasRole("USER")
+                .anyRequest().authenticated();
+        http.addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
 
@@ -46,7 +72,23 @@ public class SpringSecurityConfig {
     }
 
     @Bean
-    AuthenticationManager authenticationManager(AuthenticationConfiguration config) throws Exception {
-        return config.getAuthenticationManager();
+    public AuthenticationManager authenticationManager(final HttpSecurity http, final BCryptPasswordEncoder bCryptPasswordEncoder,
+                                                       final UserDetailsService userDetailService) throws Exception {
+        return http.getSharedObject(AuthenticationManagerBuilder.class)
+                .userDetailsService(userDetailService)
+                .passwordEncoder(bCryptPasswordEncoder)
+                .and().build();
+    }
+
+    @Bean
+    public CorsFilter corsFilter() {
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        CorsConfiguration config = new CorsConfiguration();
+        config.setAllowCredentials(false);
+        config.addAllowedOrigin("*");
+        config.addAllowedHeader("*");
+        config.addAllowedMethod("*");
+        source.registerCorsConfiguration("/**", config);
+        return new CorsFilter(source);
     }
 }

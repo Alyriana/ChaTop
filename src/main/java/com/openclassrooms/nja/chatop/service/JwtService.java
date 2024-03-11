@@ -1,12 +1,15 @@
 package com.openclassrooms.nja.chatop.service;
 
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
@@ -17,13 +20,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-
+@Setter
+@Getter
 @Service
 @RequiredArgsConstructor
+@AllArgsConstructor
 public class JwtService {
 
     @Value("${jwt.secret.key}")
     private String secretKey;
+
+    private final Logger logger = LoggerFactory.getLogger(JwtService.class);
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
@@ -51,6 +58,28 @@ public class JwtService {
         return extractExpiration(token).before(new Date());
     }
 
+    public final boolean validate(final String token) {
+        try {
+            Jwts
+                    .parserBuilder()
+                    .setSigningKey(getSignKey())
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody();
+            return true;
+        } catch (SignatureException ex) {
+            logger.error("Invalid JWT signature - {}", ex.getMessage());
+        } catch (MalformedJwtException ex) {
+            logger.error("Invalid JWT token - {}", ex.getMessage());
+        } catch (ExpiredJwtException ex) {
+            logger.error("Expired JWT token - {}", ex.getMessage());
+        } catch (UnsupportedJwtException ex) {
+            logger.error("Unsupported JWT token - {}", ex.getMessage());
+        } catch (IllegalArgumentException ex) {
+            logger.error("JWT claims string is empty - {}", ex.getMessage());
+        }
+        return false;
+    }
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
         return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));

@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/auth")
@@ -28,10 +30,19 @@ public class RegisterController {
             String token = authenticationService.registerAndGenerateToken(registerDTO);
             return ResponseEntity.ok(new JwtAuthenticationDTO(token));
         } catch (UserAlreadyExistsException | CreationFailureException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new ResponseDTO(HttpStatus.BAD_REQUEST.value(), e.getMessage()));
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(ResponseDTO.builder()
+                            .status(HttpStatus.BAD_REQUEST)
+                            .message(e.getMessage())
+                            .errors(Collections.singletonList(e.getMessage()))
+                            .build());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(HttpStatus.INTERNAL_SERVER_ERROR.value(), "Registration failed due to an unexpected error."));
+                    .body(ResponseDTO.builder()
+                            .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                            .message("Registration failed due to an unexpected error.")
+                            .errors(Collections.singletonList(e.getMessage()))
+                            .build());
         }
     }
 }

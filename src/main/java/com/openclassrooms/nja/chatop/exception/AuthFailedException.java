@@ -1,12 +1,16 @@
 package com.openclassrooms.nja.chatop.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+@ResponseStatus(HttpStatus.UNAUTHORIZED)
 public class AuthFailedException extends RuntimeException {
-    public AuthFailedException(String message, BadCredentialsException e) {
+
+    public AuthFailedException(String message) {
         super(message);
+    }
+
+    public AuthFailedException(String message, Throwable cause) {
+        super(message, cause);
     }
 }
