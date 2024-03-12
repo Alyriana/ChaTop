@@ -41,4 +41,17 @@ public class RentalService {
         return rentalRepository.save(rental);
     }
 
+    public RentalsEntity updateRental(Long id, RentalsEntity rental) {
+        RentalsEntity rentalUpload = findById(id);
+
+        rentalUpload.setName(rental.getName());
+        rentalUpload.setSurface(rental.getSurface());
+        rentalUpload.setPrice(rental.getPrice());
+        rentalUpload.setPicture(rentalUpload.getPicture());
+        rentalUpload.setDescription(rental.getDescription());
+        rentalUpload.setCreatedAt(rental.getCreatedAt());
+        rentalUpload.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
+
+        return rentalRepository.save(rental);
+    }
 }

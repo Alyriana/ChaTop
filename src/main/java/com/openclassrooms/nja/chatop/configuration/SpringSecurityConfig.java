@@ -43,7 +43,8 @@ public class SpringSecurityConfig {
 
     private final String[] AUTH_WHITE_LIST = {
             "/api/auth/register",
-            "/api/auth/login"
+            "/api/auth/login",
+            "/images/**"
     };
 
     @Bean

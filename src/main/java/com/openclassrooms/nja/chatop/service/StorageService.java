@@ -1,7 +1,7 @@
 package com.openclassrooms.nja.chatop.service;
 
 import com.openclassrooms.nja.chatop.exception.BadRequestException;
-import com.openclassrooms.nja.chatop.exception.CreationFailureException;
+import com.openclassrooms.nja.chatop.exception.UploadFailureException;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,7 +41,7 @@ public class StorageService {
             Files.copy(picture.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
             return baseUrl + "/images/" + fileName;
         } catch (Exception e) {
-            throw new CreationFailureException("Picture upload failed: " + e.getMessage(), e);
+            throw new UploadFailureException("Picture upload failed: " + e.getMessage(), e);
         }
     }
 }
