@@ -1,6 +1,6 @@
 package com.openclassrooms.nja.chatop.service;
 
-import com.openclassrooms.nja.chatop.dto.request.RegisterDTO;
+import com.openclassrooms.nja.chatop.dto.RegisterDTO;
 import com.openclassrooms.nja.chatop.entity.UsersEntity;
 import com.openclassrooms.nja.chatop.exception.NotFoundException;
 import com.openclassrooms.nja.chatop.exception.UnauthorizedException;

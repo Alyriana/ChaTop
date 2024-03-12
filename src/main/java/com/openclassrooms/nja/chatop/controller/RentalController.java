@@ -1,7 +1,7 @@
 package com.openclassrooms.nja.chatop.controller;
 
-import com.openclassrooms.nja.chatop.dto.request.RentalDTO;
-import com.openclassrooms.nja.chatop.dto.response.RentalsDTO;
+import com.openclassrooms.nja.chatop.dto.RentalDTO;
+import com.openclassrooms.nja.chatop.dto.RentalsDTO;
 import com.openclassrooms.nja.chatop.entity.RentalsEntity;
 import com.openclassrooms.nja.chatop.service.RentalService;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.openclassrooms.nja.chatop.dto.request;
+package com.openclassrooms.nja.chatop.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

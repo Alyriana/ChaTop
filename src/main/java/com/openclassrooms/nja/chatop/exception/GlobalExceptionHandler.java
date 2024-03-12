@@ -1,6 +1,6 @@
 package com.openclassrooms.nja.chatop.exception;
 
-import com.openclassrooms.nja.chatop.dto.response.ResponseDTO;
+import com.openclassrooms.nja.chatop.dto.ResponseDTO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;

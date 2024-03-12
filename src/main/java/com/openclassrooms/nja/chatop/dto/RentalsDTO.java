@@ -1,4 +1,4 @@
-package com.openclassrooms.nja.chatop.dto.response;
+package com.openclassrooms.nja.chatop.dto;
 
 import com.openclassrooms.nja.chatop.entity.RentalsEntity;
 import lombok.AllArgsConstructor;

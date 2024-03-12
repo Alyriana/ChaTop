@@ -1,8 +1,8 @@
 package com.openclassrooms.nja.chatop.controller;
 
-import com.openclassrooms.nja.chatop.dto.request.RegisterDTO;
-import com.openclassrooms.nja.chatop.dto.response.JwtAuthenticationDTO;
-import com.openclassrooms.nja.chatop.dto.response.ResponseDTO;
+import com.openclassrooms.nja.chatop.dto.JwtAuthenticationDTO;
+import com.openclassrooms.nja.chatop.dto.RegisterDTO;
+import com.openclassrooms.nja.chatop.dto.ResponseDTO;
 import com.openclassrooms.nja.chatop.exception.CreationFailureException;
 import com.openclassrooms.nja.chatop.exception.UserAlreadyExistsException;
 import com.openclassrooms.nja.chatop.service.AuthenticationService;

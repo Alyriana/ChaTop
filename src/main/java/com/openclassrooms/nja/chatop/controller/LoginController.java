@@ -1,7 +1,7 @@
 package com.openclassrooms.nja.chatop.controller;
 
-import com.openclassrooms.nja.chatop.dto.request.LoginDTO;
-import com.openclassrooms.nja.chatop.dto.response.JwtAuthenticationDTO;
+import com.openclassrooms.nja.chatop.dto.JwtAuthenticationDTO;
+import com.openclassrooms.nja.chatop.dto.LoginDTO;
 import com.openclassrooms.nja.chatop.service.AuthenticationService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

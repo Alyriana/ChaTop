@@ -1,7 +1,7 @@
 package com.openclassrooms.nja.chatop.service;
 
-import com.openclassrooms.nja.chatop.dto.request.LoginDTO;
-import com.openclassrooms.nja.chatop.dto.request.RegisterDTO;
+import com.openclassrooms.nja.chatop.dto.LoginDTO;
+import com.openclassrooms.nja.chatop.dto.RegisterDTO;
 import com.openclassrooms.nja.chatop.entity.UsersEntity;
 import com.openclassrooms.nja.chatop.exception.AuthFailedException;
 import lombok.RequiredArgsConstructor;

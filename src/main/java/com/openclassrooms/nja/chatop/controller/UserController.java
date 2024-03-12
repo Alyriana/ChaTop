@@ -1,6 +1,6 @@
 package com.openclassrooms.nja.chatop.controller;
 
-import com.openclassrooms.nja.chatop.dto.response.ResponseDTO;
+import com.openclassrooms.nja.chatop.dto.ResponseDTO;
 import com.openclassrooms.nja.chatop.entity.UsersEntity;
 import com.openclassrooms.nja.chatop.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
