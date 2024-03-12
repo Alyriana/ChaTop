@@ -1,10 +1,9 @@
 package com.openclassrooms.nja.chatop.service;
 
-import com.openclassrooms.nja.chatop.dto.request.LoginDTO;
-import com.openclassrooms.nja.chatop.dto.request.RegisterDTO;
+import com.openclassrooms.nja.chatop.dto.LoginDTO;
+import com.openclassrooms.nja.chatop.dto.RegisterDTO;
 import com.openclassrooms.nja.chatop.entity.UsersEntity;
 import com.openclassrooms.nja.chatop.exception.AuthFailedException;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -14,7 +13,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Data
+
 @Service
 @RequiredArgsConstructor
 public class AuthenticationService {

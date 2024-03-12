@@ -1,4 +1,4 @@
-package com.openclassrooms.nja.chatop.dto.request;
+package com.openclassrooms.nja.chatop.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -9,12 +9,9 @@ import lombok.NoArgsConstructor;
 
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class RegisterDTO {
-
-    @NotBlank(message = "Name cannot be empty")
-    private String name;
+@AllArgsConstructor
+public class LoginDTO {
 
     @NotBlank(message = "Email cannot be empty")
     @Email(message = "Invalid email format")
