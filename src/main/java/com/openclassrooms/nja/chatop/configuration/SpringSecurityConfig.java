@@ -36,18 +36,15 @@ import org.springframework.web.filter.CorsFilter;
 )
 public class SpringSecurityConfig {
 
-    private final String[] AUTH_WHITE_LIST = {
-            "/api/auth/register",
-            "/api/auth/login",
-            "/v3/api-docs/**",
-            "/swagger-ui/**",
-            "/v2/api-docs/**",
-            "/swagger-resources/**"
-    };
     @Autowired
     private JwtAuthFilter jwtAuthFilter;
     @Value("${chatop.security.cors.origins}")
     private String corsOrigins;
+
+    private final String[] AUTH_WHITE_LIST = {
+            "/api/auth/register",
+            "/api/auth/login"
+    };
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -84,8 +81,8 @@ public class SpringSecurityConfig {
     public CorsFilter corsFilter() {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
-        config.setAllowCredentials(false);
-        config.addAllowedOrigin("*");
+        config.setAllowCredentials(true);
+        config.addAllowedOrigin(corsOrigins);
         config.addAllowedHeader("*");
         config.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", config);
