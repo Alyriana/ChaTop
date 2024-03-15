@@ -6,7 +6,6 @@ import com.openclassrooms.nja.chatop.exception.NotFoundException;
 import com.openclassrooms.nja.chatop.exception.UnauthorizedException;
 import com.openclassrooms.nja.chatop.exception.UserAlreadyExistsException;
 import com.openclassrooms.nja.chatop.repository.UserRepository;
-import lombok.Data;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,10 +14,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
 @Service
-@Data
 @RequiredArgsConstructor
 public class UserService {
 
@@ -28,7 +26,13 @@ public class UserService {
     @Transactional(readOnly = true)
     public UsersEntity findByEmail(String email) {
         return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("User with email " + email + " not found"));
+                .orElseThrow(() -> new NotFoundException("User with provided email does not exist."));
+    }
+
+    @Transactional(readOnly = true)
+    public UsersEntity findById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with provided Id does not exist."));
     }
 
     @Transactional(readOnly = true)
@@ -37,23 +41,27 @@ public class UserService {
     }
 
     @Transactional
-    public UsersEntity createUser(RegisterDTO user) {
-        if (existsByEmail(user.getEmail())) {
-            throw new UserAlreadyExistsException("User already exists with this email");
+    public UsersEntity createUser(RegisterDTO registerDTO) {
+        if (existsByEmail(registerDTO.getEmail())) {
+            throw new UserAlreadyExistsException("A user with this email already exists.");
         }
-        UsersEntity userCreated = UsersEntity.builder()
-                .email(user.getEmail())
-                .name(user.getName())
-                .password(passwordEncoder.encode(user.getPassword()))
-                .createdAt(Timestamp.valueOf(LocalDateTime.now()))
+        UsersEntity newUser = buildUserEntityFromDTO(registerDTO);
+        return userRepository.save(newUser);
+    }
+
+    private UsersEntity buildUserEntityFromDTO(RegisterDTO registerDTO) {
+        return UsersEntity.builder()
+                .email(registerDTO.getEmail())
+                .name(registerDTO.getName())
+                .password(passwordEncoder.encode(registerDTO.getPassword()))
+                .createdAt(Timestamp.from(Instant.now()))
                 .build();
-        return userRepository.save(userCreated);
     }
 
     public String getCurrentAuthenticatedUserName() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !authentication.isAuthenticated()) {
-            throw new UnauthorizedException("User is not authenticated");
+            throw new UnauthorizedException("User is not authenticated.");
         }
         return authentication.getName();
     }

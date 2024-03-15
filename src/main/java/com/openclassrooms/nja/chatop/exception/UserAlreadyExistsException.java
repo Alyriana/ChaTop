@@ -1,15 +1,11 @@
 package com.openclassrooms.nja.chatop.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.CONFLICT)
-public class UserAlreadyExistsException extends RuntimeException {
+import java.util.Collections;
+
+public class UserAlreadyExistsException extends BaseException {
     public UserAlreadyExistsException(String message) {
-        super(message);
-    }
-
-    public UserAlreadyExistsException(String message, Throwable cause) {
-        super(message, cause);
+        super(HttpStatus.CONFLICT, "USER_ALREADY_EXISTS", Collections.singletonList(message));
     }
 }

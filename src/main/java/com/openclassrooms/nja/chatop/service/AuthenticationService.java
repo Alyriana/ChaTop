@@ -4,6 +4,7 @@ import com.openclassrooms.nja.chatop.dto.LoginDTO;
 import com.openclassrooms.nja.chatop.dto.RegisterDTO;
 import com.openclassrooms.nja.chatop.entity.UsersEntity;
 import com.openclassrooms.nja.chatop.exception.AuthFailedException;
+import com.openclassrooms.nja.chatop.exception.UserAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -12,7 +13,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 
 @Service
 @RequiredArgsConstructor
@@ -24,24 +24,27 @@ public class AuthenticationService {
 
     @Transactional
     public String registerAndGenerateToken(RegisterDTO registerDTO) {
+        if (userService.existsByEmail(registerDTO.getEmail())) {
+            throw new UserAlreadyExistsException("A user with this email already exists.");
+        }
         UsersEntity userCreated = userService.createUser(registerDTO);
         return jwtService.generateToken(userCreated.getEmail());
     }
 
     @Transactional
     public String loginAndGenerateToken(LoginDTO loginDTO) {
+        Authentication authentication = authenticateUser(loginDTO.getEmail(), loginDTO.getPassword());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+        return jwtService.generateToken(authentication.getName());
+    }
+
+    private Authentication authenticateUser(String email, String password) {
         try {
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            loginDTO.getEmail(),
-                            loginDTO.getPassword()
-                    )
+            return authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, password)
             );
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-            return jwtService.generateToken(authentication.getName());
         } catch (BadCredentialsException e) {
-            throw new AuthFailedException("Invalid email or password", e);
+            throw new AuthFailedException("Invalid email or password.");
         }
     }
 }
-

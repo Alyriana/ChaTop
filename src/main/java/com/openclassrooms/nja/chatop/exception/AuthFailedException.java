@@ -1,16 +1,11 @@
 package com.openclassrooms.nja.chatop.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.UNAUTHORIZED)
-public class AuthFailedException extends RuntimeException {
+import java.util.Collections;
 
+public class AuthFailedException extends BaseException {
     public AuthFailedException(String message) {
-        super(message);
-    }
-
-    public AuthFailedException(String message, Throwable cause) {
-        super(message, cause);
+        super(HttpStatus.UNAUTHORIZED, "AUTH_FAILED", Collections.singletonList(message));
     }
 }

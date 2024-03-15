@@ -1,13 +1,13 @@
 package com.openclassrooms.nja.chatop.service;
 
-
-import io.jsonwebtoken.*;
+import com.openclassrooms.nja.chatop.exception.TokenErrorException;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Setter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,11 +20,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
-@Setter
-@Getter
 @Service
 @RequiredArgsConstructor
-@AllArgsConstructor
 public class JwtService {
 
     @Value("${jwt.secret.key}")
@@ -46,43 +43,31 @@ public class JwtService {
     }
 
     private Claims extractAllClaims(String token) {
-        return Jwts
-                .parserBuilder()
-                .setSigningKey(getSignKey())
-                .build()
-                .parseClaimsJws(token)
-                .getBody();
-    }
-
-    private Boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
-    public final boolean validate(final String token) {
         try {
-            Jwts
-                    .parserBuilder()
+            return Jwts.parserBuilder()
                     .setSigningKey(getSignKey())
                     .build()
                     .parseClaimsJws(token)
                     .getBody();
-            return true;
-        } catch (SignatureException ex) {
-            logger.error("Invalid JWT signature - {}", ex.getMessage());
-        } catch (MalformedJwtException ex) {
-            logger.error("Invalid JWT token - {}", ex.getMessage());
-        } catch (ExpiredJwtException ex) {
-            logger.error("Expired JWT token - {}", ex.getMessage());
-        } catch (UnsupportedJwtException ex) {
-            logger.error("Unsupported JWT token - {}", ex.getMessage());
-        } catch (IllegalArgumentException ex) {
-            logger.error("JWT claims string is empty - {}", ex.getMessage());
+        } catch (JwtException ex) {
+            logger.error("JWT validation error: {}", ex.getMessage());
+            throw new TokenErrorException("JWT validation error: " + ex.getMessage());
         }
-        return false;
     }
+
+    private Boolean isTokenExpired(String token) {
+        final Date expiration = extractExpiration(token);
+        return expiration.before(new Date());
+    }
+
+    public final boolean validate(final String token) {
+        Claims claims = extractAllClaims(token);
+        return (claims != null && !isTokenExpired(token));
+    }
+
     public Boolean validateToken(String token, UserDetails userDetails) {
         final String username = extractUsername(token);
-        return (username.equals(userDetails.getUsername()) && !isTokenExpired(token));
+        return (username != null && username.equals(userDetails.getUsername()) && !isTokenExpired(token));
     }
 
     public String generateToken(String userName) {
@@ -91,11 +76,15 @@ public class JwtService {
     }
 
     private String createToken(Map<String, Object> claims, String userName) {
+        long expirationTimeLong = 1000 * 60 * 15; // 15 min expiration time
+        final Date createdDate = new Date();
+        final Date expirationDate = new Date(createdDate.getTime() + expirationTimeLong);
+
         return Jwts.builder()
                 .setClaims(claims)
                 .setSubject(userName)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 15)) //15 min expiration time
+                .setIssuedAt(createdDate)
+                .setExpiration(expirationDate)
                 .signWith(getSignKey(), SignatureAlgorithm.HS256).compact();
     }
 
