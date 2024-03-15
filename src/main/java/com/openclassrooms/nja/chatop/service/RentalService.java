@@ -7,12 +7,13 @@ import com.openclassrooms.nja.chatop.exception.NotFoundException;
 import com.openclassrooms.nja.chatop.repository.RentalRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
+import java.time.Instant;
 
-@Service
 @RequiredArgsConstructor
+@Service
 public class RentalService {
     private final RentalRepository rentalRepository;
     private final UserService userService;
@@ -27,31 +28,27 @@ public class RentalService {
                 .orElseThrow(() -> new NotFoundException("Rental not found with id: " + id));
     }
 
-    public RentalsEntity createRental(RentalDTO rentalDTO) {
-        RentalsEntity rental = new RentalsEntity();
-
-        rental.setName(rentalDTO.getName());
-        rental.setSurface(rentalDTO.getSurface());
-        rental.setPrice(rentalDTO.getPrice());
-        rental.setDescription(rentalDTO.getDescription());
-        rental.setCreatedAt(Timestamp.valueOf(LocalDateTime.now()));
-        rental.setOwnerId(userService.findByEmail(userService.getCurrentAuthenticatedUserName()).getId());
-        rental.setPicture(storageService.uploadPicture(rentalDTO.getPicture()));
-
-        return rentalRepository.save(rental);
+    @Transactional
+    public void createRental(RentalDTO rentalDTO) {
+        rentalRepository.save(RentalsEntity.builder()
+                .name(rentalDTO.getName())
+                .surface(rentalDTO.getSurface())
+                .price(rentalDTO.getPrice())
+                .description(rentalDTO.getDescription())
+                .ownerId(userService.findByEmail(userService.getCurrentAuthenticatedUserName()).getId())
+                .picture(storageService.uploadPicture(rentalDTO.getPicture()))
+                .createdAt(Timestamp.from(Instant.now()))
+                .build());
     }
 
-    public RentalsEntity updateRental(Long id, RentalsEntity rental) {
-        RentalsEntity rentalUpload = findById(id);
-
-        rentalUpload.setName(rental.getName());
-        rentalUpload.setSurface(rental.getSurface());
-        rentalUpload.setPrice(rental.getPrice());
-        rentalUpload.setPicture(rentalUpload.getPicture());
-        rentalUpload.setDescription(rental.getDescription());
-        rentalUpload.setCreatedAt(rental.getCreatedAt());
-        rentalUpload.setUpdatedAt(Timestamp.valueOf(LocalDateTime.now()));
-
-        return rentalRepository.save(rental);
+    @Transactional
+    public void updateRental(Long id, RentalDTO rentalDTO) {
+        RentalsEntity rentalToUpdate = findById(id);
+        rentalToUpdate.setName(rentalDTO.getName());
+        rentalToUpdate.setSurface(rentalDTO.getSurface());
+        rentalToUpdate.setPrice(rentalDTO.getPrice());
+        rentalToUpdate.setDescription(rentalDTO.getDescription());
+        rentalToUpdate.setUpdatedAt(Timestamp.from(Instant.now()));
+        rentalRepository.save(rentalToUpdate);
     }
 }

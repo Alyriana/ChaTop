@@ -1,6 +1,7 @@
 package com.openclassrooms.nja.chatop.dto;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -14,9 +15,9 @@ public class MessageDTO {
     @NotBlank(message = "Message cannot be empty")
     private String message;
 
-    @NotBlank
+    @NotNull
     private Integer userId;
 
-    @NotBlank
+    @NotNull
     private Integer rentalId;
 }

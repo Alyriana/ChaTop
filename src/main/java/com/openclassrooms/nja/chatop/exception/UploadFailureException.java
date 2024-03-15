@@ -1,15 +1,11 @@
 package com.openclassrooms.nja.chatop.exception;
 
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
-@ResponseStatus(HttpStatus.BAD_REQUEST)
-public class UploadFailureException extends RuntimeException {
+import java.util.Collections;
+
+public class UploadFailureException extends BaseException {
     public UploadFailureException(String message) {
-        super(message);
-    }
-
-    public UploadFailureException(String message, Throwable cause) {
-        super(message, cause);
+        super(HttpStatus.BAD_REQUEST, "UPLOAD_FAILED", Collections.singletonList(message));
     }
 }

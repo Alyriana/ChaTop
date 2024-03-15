@@ -20,7 +20,6 @@ public class LoginController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtAuthenticationDTO> authenticateUser(@Valid @RequestBody LoginDTO loginDTO) {
-        String token = authenticationService.loginAndGenerateToken(loginDTO);
-        return ResponseEntity.ok(new JwtAuthenticationDTO(token));
+        return ResponseEntity.ok(new JwtAuthenticationDTO(authenticationService.loginAndGenerateToken(loginDTO)));
     }
 }
