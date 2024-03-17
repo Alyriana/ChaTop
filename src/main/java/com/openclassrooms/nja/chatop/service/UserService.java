@@ -1,6 +1,7 @@
 package com.openclassrooms.nja.chatop.service;
 
 import com.openclassrooms.nja.chatop.dto.RegisterDTO;
+import com.openclassrooms.nja.chatop.dto.UserConversionDTO;
 import com.openclassrooms.nja.chatop.entity.UsersEntity;
 import com.openclassrooms.nja.chatop.exception.NotFoundException;
 import com.openclassrooms.nja.chatop.exception.UnauthorizedException;
@@ -22,17 +23,18 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ConversionService conversionService;
 
     @Transactional(readOnly = true)
-    public UsersEntity findByEmail(String email) {
-        return userRepository.findByEmail(email)
-                .orElseThrow(() -> new NotFoundException("User with provided email does not exist."));
+    public UserConversionDTO findByEmail(String email) {
+        return conversionService.userToDTO(userRepository.findByEmail(email)
+                .orElseThrow(() -> new NotFoundException("User with provided email does not exist.")));
     }
 
     @Transactional(readOnly = true)
-    public UsersEntity findById(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new NotFoundException("User with provided Id does not exist."));
+    public UserConversionDTO findById(Long id) {
+        return conversionService.userToDTO(userRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("User with provided Id does not exist.")));
     }
 
     @Transactional(readOnly = true)
@@ -41,12 +43,12 @@ public class UserService {
     }
 
     @Transactional
-    public UsersEntity createUser(RegisterDTO registerDTO) {
+    public UserConversionDTO createUser(RegisterDTO registerDTO) {
         if (existsByEmail(registerDTO.getEmail())) {
             throw new UserAlreadyExistsException("A user with this email already exists.");
         }
         UsersEntity newUser = buildUserEntityFromDTO(registerDTO);
-        return userRepository.save(newUser);
+        return conversionService.userToDTO(userRepository.save(newUser));
     }
 
     private UsersEntity buildUserEntityFromDTO(RegisterDTO registerDTO) {

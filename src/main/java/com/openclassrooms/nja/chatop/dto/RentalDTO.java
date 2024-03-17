@@ -1,7 +1,7 @@
 package com.openclassrooms.nja.chatop.dto;
 
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,7 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Builder
 public class RentalDTO {
 
-    @NotBlank(message = "Name cannot be empty")
+    @NotNull(message = "Name cannot be empty")
     private String name;
 
     @NotNull(message = "Surface cannot be empty")
@@ -26,7 +26,8 @@ public class RentalDTO {
     //@NotBlank(message = "Picture cannot be empty")
     private MultipartFile picture;
 
-    @NotBlank(message = "Description cannot be empty")
+    @NotNull(message = "Description cannot be empty")
+    @Size(max = 2000, message = "Description length must be less than 2000 characters.")
     private String description;
 
 }

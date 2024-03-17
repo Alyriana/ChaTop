@@ -1,5 +1,6 @@
 package com.openclassrooms.nja.chatop.service;
 
+import com.openclassrooms.nja.chatop.dto.RentalConversionDTO;
 import com.openclassrooms.nja.chatop.dto.RentalDTO;
 import com.openclassrooms.nja.chatop.dto.RentalsDTO;
 import com.openclassrooms.nja.chatop.entity.RentalsEntity;
@@ -18,11 +19,15 @@ public class RentalService {
     private final RentalRepository rentalRepository;
     private final UserService userService;
     private final StorageService storageService;
+    private final ConversionService conversionService;
 
     public RentalsDTO getRentals() {
         return new RentalsDTO(rentalRepository.findAll());
     }
 
+    public RentalConversionDTO findByIdToDTO(Long id) {
+        return conversionService.rentalToDTO(findById(id));
+    }
     public RentalsEntity findById(Long id) {
         return rentalRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Rental not found with id: " + id));

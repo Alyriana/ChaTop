@@ -2,7 +2,7 @@ package com.openclassrooms.nja.chatop.service;
 
 import com.openclassrooms.nja.chatop.dto.LoginDTO;
 import com.openclassrooms.nja.chatop.dto.RegisterDTO;
-import com.openclassrooms.nja.chatop.entity.UsersEntity;
+import com.openclassrooms.nja.chatop.dto.UserConversionDTO;
 import com.openclassrooms.nja.chatop.exception.AuthFailedException;
 import com.openclassrooms.nja.chatop.exception.UserAlreadyExistsException;
 import lombok.RequiredArgsConstructor;
@@ -27,7 +27,7 @@ public class AuthenticationService {
         if (userService.existsByEmail(registerDTO.getEmail())) {
             throw new UserAlreadyExistsException("A user with this email already exists.");
         }
-        UsersEntity userCreated = userService.createUser(registerDTO);
+        UserConversionDTO userCreated = userService.createUser(registerDTO);
         return jwtService.generateToken(userCreated.getEmail());
     }
 
