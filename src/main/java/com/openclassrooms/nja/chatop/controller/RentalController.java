@@ -35,9 +35,8 @@ public class RentalController {
                             content = @Content)
             })
     @GetMapping("") // Maps GET requests to this method
-    public ResponseEntity<RentalsDTO> getAll() {
-        RentalsDTO rentalsDTO = rentalService.getRentals(); // Calls the service to get all rentals
-        return ResponseEntity.ok(rentalsDTO); // Returns the list of rentals with OK status
+    public ResponseEntity<?> getAll() {
+        return ResponseEntity.ok(rentalService.getRentals()); // Returns the list of rentals with OK status
     }
 
     // Handles the creation of a new rental
