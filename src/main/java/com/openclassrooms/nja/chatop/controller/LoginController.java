@@ -7,6 +7,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -38,6 +39,7 @@ public class LoginController {
                     @ApiResponse(responseCode = "401", description = "Invalid email or password. UNAUTHORIZED",
                             content = @Content)
             })
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/login")
     public ResponseEntity<JwtAuthenticationDTO> authenticateUser(@Valid @RequestBody LoginDTO loginDTO) {
         // Authenticates the user and generates a JWT, then returns it in the response body

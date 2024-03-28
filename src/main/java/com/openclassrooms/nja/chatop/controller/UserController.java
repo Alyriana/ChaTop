@@ -6,6 +6,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -32,6 +33,7 @@ public class UserController {
                     @ApiResponse(responseCode = "401", description = "Invalid user. UNAUTHORIZED",
                             content = @Content)
             })
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/auth/me") // Maps HTTP GET requests to /api/auth/me to this method
     public ResponseEntity<?> getCurrentUser(Authentication authentication) {
         // Uses the Authentication object to get the current user's email and find their details
@@ -47,6 +49,7 @@ public class UserController {
                     @ApiResponse(responseCode = "401", description = "Invalid user. UNAUTHORIZED",
                             content = @Content)
             })
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("/user/{id}") // Maps HTTP GET requests to /api/user/{id} to this method
     public ResponseEntity<?> getUserById(@PathVariable Long id) {
         // Calls the userService to find a user by their ID and return their details

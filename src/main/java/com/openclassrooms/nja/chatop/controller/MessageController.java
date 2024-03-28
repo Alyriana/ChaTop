@@ -5,6 +5,7 @@ import com.openclassrooms.nja.chatop.service.MessageService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,7 @@ public class MessageController {
                     @ApiResponse(responseCode = "400", description = "Message, rental or user cannot be empty. BAD_REQUEST", content = @Content),
                     @ApiResponse(responseCode = "401", description = "Invalid user. UNAUTHORIZED", content = @Content)
             })
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/messages") // Maps POST requests to /api/messages to this method
     public ResponseEntity<?> createRental(@Valid @RequestBody MessageDTO messageDTO) {
         // Calls the messageService to create a new message based on the passed DTO

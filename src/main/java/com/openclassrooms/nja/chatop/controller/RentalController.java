@@ -8,6 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -34,6 +35,7 @@ public class RentalController {
                     @ApiResponse(responseCode = "401", description = "Invalid user. UNAUTHORIZED",
                             content = @Content)
             })
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("") // Maps GET requests to this method
     public ResponseEntity<?> getAll() {
         return ResponseEntity.ok(rentalService.getRentals()); // Returns the list of rentals with OK status
@@ -47,6 +49,7 @@ public class RentalController {
                     @ApiResponse(responseCode = "401", description = "Invalid user. UNAUTHORIZED",
                             content = @Content)
             })
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("") // Maps POST requests to this method
     public ResponseEntity<?> createRental(@ModelAttribute RentalDTO rentalDTO) {
         rentalService.createRental(rentalDTO); // Calls the service to create a new rental
@@ -62,6 +65,7 @@ public class RentalController {
                     @ApiResponse(responseCode = "401", description = "Invalid user. UNAUTHORIZED",
                             content = @Content)
             })
+    @SecurityRequirement(name = "Bearer Authentication")
     @GetMapping("{id}") // Maps GET requests with an ID to this method
     public ResponseEntity<?> getRentalById(@PathVariable("id") Long id) {
         return ResponseEntity.ok(rentalService.findByIdToDTO(id)); // Returns the found rental or an error if not found
@@ -75,6 +79,7 @@ public class RentalController {
                     @ApiResponse(responseCode = "401", description = "Invalid user. UNAUTHORIZED",
                             content = @Content)
             })
+    @SecurityRequirement(name = "Bearer Authentication")
     @PutMapping("{id}") // Maps PUT requests with an ID to this method
     public ResponseEntity<?> updateRental(@PathVariable("id") Long id, @ModelAttribute RentalDTO rentalDTO) {
         rentalService.updateRental(id, rentalDTO); // Calls the service to update the rental

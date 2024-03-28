@@ -41,8 +41,12 @@ import static org.springframework.security.config.http.SessionCreationPolicy.STA
 @EnableMethodSecurity // Enables method level security
 @Configuration // Indicates that this class is a configuration class
 @OpenAPIDefinition(info = @Info(title = "ChâTop API", version = "V1")) // Defines OpenAPI information for Swagger UI
-@SecurityScheme(name = "bearerAuth", type = SecuritySchemeType.HTTP, bearerFormat = "JWT", scheme = "bearer")
-// Defines the security scheme for Swagger UI
+@SecurityScheme(
+        name = "Bearer Authentication",
+        type = SecuritySchemeType.HTTP,
+        bearerFormat = "JWT",
+        scheme = "bearer"
+)// Defines the security scheme for Swagger UI
 public class SpringSecurityConfig {
 
     private final String[] WHITE_LIST = { // Array of endpoints that do not require authentication
@@ -50,7 +54,9 @@ public class SpringSecurityConfig {
             "/api/auth/login",
             "/images/**",
             "/swagger-ui/**",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
+            "/swagger-resources/**",
+            "/v2/api-docs"
     };
     @Autowired
     private JwtAuthFilter jwtAuthFilter; // Injects the JWT authentication filter

@@ -6,6 +6,7 @@ import com.openclassrooms.nja.chatop.service.AuthenticationService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -36,6 +37,7 @@ public class RegisterController {
                     @ApiResponse(responseCode = "409", description = "A user with this email already exists. CONFLICT",
                             content = @Content)
             })
+    @SecurityRequirement(name = "Bearer Authentication")
     @PostMapping("/register") // Maps POST requests to "/api/auth/register" to this method
     public ResponseEntity<?> registerUser(@Valid @RequestBody RegisterDTO registerDTO) {
         // Validates the RegisterDTO object, registers the user, generates a JWT, and returns it
